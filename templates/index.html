@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>College Essay Grader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>College Essay Grader</h1>
+        <p>Paste your college application essay below to get AI feedback.</p>
+
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        <form action="/analyze" method="POST">
+            <label for="essay_prompt">Essay Prompt (optional)</label>
+            <textarea id="essay_prompt" name="essay_prompt" rows="3"
+                placeholder="Paste the prompt/question your essay is responding to, if you have one..."></textarea>
+
+            <label for="essay">Your Essay</label>
+            <p class="field-hint">Must be between {{ min_words }} and {{ max_words }} words.</p>
+            <textarea id="essay" name="essay" rows="15" placeholder="Paste your essay here..." required></textarea>
+            <br>
+            <button type="submit">Submit Essay</button>
+            <div id="spinner" class="spinner" hidden></div>
+        </form>
+
+        <a href="/topics" class="back-link">Not sure what to write about? Compare topics &rarr;</a>
+    </div>
+
+    <footer class="site-footer">Built by a Northwestern Class of 2029 admit.</footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

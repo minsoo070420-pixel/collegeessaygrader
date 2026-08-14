@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Essay Received</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Essay Received!</h1>
+        <p>AI grading isn't hooked up yet — this just confirms your essay made it to the server.</p>
+        <pre>{{ essay }}</pre>
+        <a href="/">&larr; Go back</a>
+    </div>
+</body>
+</html>

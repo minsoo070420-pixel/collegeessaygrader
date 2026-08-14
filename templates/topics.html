@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compare Essay Topics — College Essay Grader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Compare Essay Topics</h1>
+        <p>Add {{ min_topics }} to {{ max_topics }} potential essay topics below.</p>
+
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        {% if analysis %}
+        <section class="summary-box">
+            <h2>Recommended Topic</h2>
+            <p><strong>{{ analysis.recommended_topic }}</strong></p>
+            <p>{{ analysis.overall_advice }}</p>
+        </section>
+
+        <section>
+            <h2>Topic Breakdown</h2>
+            {% for t in analysis.topics %}
+            <details class="card">
+                <summary>
+                    <span class="category-name">Topic {{ loop.index }}</span>
+                    <span class="score">{{ t.strength_score }}/10</span>
+                </summary>
+                <div class="card-body">
+                    <p class="label">Topic</p>
+                    <p>{{ t.topic }}</p>
+
+                    <p class="label">Strengths</p>
+                    <p>{{ t.strengths }}</p>
+
+                    <p class="label">Risks</p>
+                    <p>{{ t.risks }}</p>
+
+                    <p class="label">Suggested angle</p>
+                    <p>{{ t.suggested_angle }}</p>
+                </div>
+            </details>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <form action="/analyze-topics" method="POST">
+            <label>Essay Topics</label>
+            <div id="topics-container">
+                <textarea name="topics" rows="2" placeholder="Describe a potential essay topic..." required></textarea>
+                <textarea name="topics" rows="2" placeholder="Describe a potential essay topic..." required></textarea>
+            </div>
+
+            <button type="button" id="add-topic-btn" class="button-secondary">+ Add another topic</button>
+            <br>
+            <button type="submit">Submit Topics</button>
+        </form>
+
+        <a href="/" class="back-link">&larr; Back to essay grader</a>
+    </div>
+
+    <footer class="site-footer">Built by a Northwestern Class of 2029 admit.</footer>
+
+    <script src="{{ url_for('static', filename='topics.js') }}"></script>
+</body>
+</html>

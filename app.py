@@ -1,0 +1,142 @@
+import os                  # reads PORT and FLASK_DEBUG from the environment
+from datetime import date  # used to detect when a new calendar day starts, to reset the daily count
+from flask import Flask, render_template, request  # render_template loads HTML files; request reads form data
+from grading import grade_essay, CATEGORY_KEYS  # the grading call, plus the fixed display order for categories
+from topic_analysis import analyze_topics as compare_topics  # aliased to avoid clashing with the view function below
+
+app = Flask(__name__)  # creates the Flask application object that routes attach to
+
+MIN_WORD_COUNT = 50   # essays shorter than this are rejected
+MAX_WORD_COUNT = 650  # essays longer than this are rejected
+
+DAILY_GEMINI_LIMIT = 15  # shared cap across every route that calls Gemini (essay grading AND topic analysis)
+                          # set to None to remove the app-level cap entirely (Gemini's own quota still applies)
+
+# In-memory counter, shared by every request this process handles — and by every route that
+# calls Gemini, not just essay grading. Resets to 0 whenever the calendar date changes. Does NOT
+# persist across server restarts, and does NOT stay in sync across multiple worker processes if
+# this app is ever deployed with more than one.
+_gemini_call_count = 0
+_gemini_call_count_date = None
+
+MIN_TOPICS = 2  # fewest topics a user can submit on the /topics page
+MAX_TOPICS = 5  # most topics a user can submit on the /topics page
+
+def _daily_limit_reached():
+    """Checks and updates the shared daily Gemini-call counter.
+
+    Returns True if today's budget is already used up (caller should NOT call Gemini).
+    Otherwise increments the counter — since the caller is about to spend a slot — and
+    returns False.
+    """
+    global _gemini_call_count, _gemini_call_count_date
+    today = date.today()
+    if _gemini_call_count_date != today:  # first request of a new calendar day
+        _gemini_call_count_date = today
+        _gemini_call_count = 0
+
+    if DAILY_GEMINI_LIMIT is not None and _gemini_call_count >= DAILY_GEMINI_LIMIT:
+        return True
+
+    _gemini_call_count += 1  # counted before the caller's Gemini call, since reaching Gemini uses
+                              # a quota slot even if the response later fails to parse
+    return False
+
+@app.route("/")  # runs when a browser visits the root URL ("/")
+def home():
+    return render_template("index.html", min_words=MIN_WORD_COUNT, max_words=MAX_WORD_COUNT)
+
+@app.route("/topics")  # GET-only: just displays the topic-comparison form
+def topics():
+    return render_template("topics.html", min_topics=MIN_TOPICS, max_topics=MAX_TOPICS)
+
+@app.route("/analyze-topics", methods=["POST"])  # POST-only: receives the submitted topic list
+def analyze_topics():
+    raw_topics = request.form.getlist("topics")  # every field named "topics", regardless of how many exist
+    topics_list = [t.strip() for t in raw_topics if t.strip()]  # drop empty/whitespace-only entries
+
+    render_kwargs = {"min_topics": MIN_TOPICS, "max_topics": MAX_TOPICS}
+
+    if not (MIN_TOPICS <= len(topics_list) <= MAX_TOPICS):
+        return render_template(
+            "topics.html",
+            error=f"Please provide between {MIN_TOPICS} and {MAX_TOPICS} topics.",
+            **render_kwargs,
+        ), 400
+
+    if _daily_limit_reached():
+        return render_template(
+            "topics.html",
+            error="We've reached today's AI usage limit. Please check back tomorrow.",
+            **render_kwargs,
+        ), 503
+
+    try:
+        analysis = compare_topics(topics_list)  # calls Gemini and returns the parsed comparison dict
+    except ValueError as e:  # raised when Gemini's response can't be parsed as JSON
+        print(f"Topic analysis failed to parse: {e}")  # full detail logged server-side only
+        return render_template(
+            "topics.html", error="The AI response could not be understood. Please try again.", **render_kwargs
+        ), 500
+
+    return render_template("topics.html", analysis=analysis, **render_kwargs)
+
+@app.route("/submit", methods=["POST"])  # only accepts POST requests (form submissions), not plain page visits
+def submit():
+    essay_text = request.form.get("essay", "")  # pulls the "essay" field from the submitted form; "" if missing
+    return render_template("submitted.html", essay=essay_text)  # passes essay_text into the template as {{ essay }}
+
+@app.route("/analyze", methods=["POST"])  # POST-only endpoint that grades the essay and shows the results page
+def analyze():
+    essay_text = request.form.get("essay", "").strip()  # .strip() removes leading/trailing whitespace
+    essay_prompt = request.form.get("essay_prompt", "").strip()  # optional; "" if left blank
+
+    # Bundles the two constants into every index.html render below, so the word-count
+    # notice on the page always matches these values without repeating them elsewhere.
+    render_kwargs = {"min_words": MIN_WORD_COUNT, "max_words": MAX_WORD_COUNT}
+
+    if not essay_text:  # catches both "missing entirely" and "just spaces" cases
+        return render_template("index.html", error="Essay text cannot be empty.", **render_kwargs), 400
+
+    word_count = len(essay_text.split())  # .split() with no arguments splits on any whitespace
+
+    if word_count < MIN_WORD_COUNT:
+        return render_template(
+            "index.html",
+            error=f"Your essay is too short ({word_count} words). Please submit at least {MIN_WORD_COUNT} words.",
+            **render_kwargs,
+        ), 400
+
+    if word_count > MAX_WORD_COUNT:
+        return render_template(
+            "index.html",
+            error=f"Your essay is too long ({word_count} words). Please keep it under {MAX_WORD_COUNT} words.",
+            **render_kwargs,
+        ), 400
+
+    if _daily_limit_reached():
+        return render_template(
+            "index.html",
+            error="We've reached today's AI usage limit. Please check back tomorrow.",
+            **render_kwargs,
+        ), 503
+
+    try:
+        result = grade_essay(essay_text, essay_prompt=essay_prompt or None)  # "" becomes None when blank
+    except ValueError as e:  # raised by grade_essay() when Gemini's response can't be parsed as JSON
+        print(f"Grading failed to parse: {e}")  # full detail (including raw response) logged server-side only
+        return render_template(
+            "index.html", error="The AI response could not be understood. Please try again.", **render_kwargs
+        ), 500
+
+    return render_template(
+        "results.html",
+        categories=[(key, result[key]) for key in CATEGORY_KEYS],  # (name, data) pairs, in fixed display order
+        overall_summary=result.get("overall_summary", ""),
+        expansion_ideas=result.get("expansion_ideas", []),
+    )
+
+if __name__ == "__main__":  # ensures this only runs when you execute `python app.py` directly
+    port = int(os.environ.get("PORT", 5001))  # Render sets PORT itself; 5001 is only used for local dev
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"  # off unless explicitly enabled — Render won't set this
+    app.run(host="0.0.0.0", port=port, debug=debug)  # 0.0.0.0 makes the app reachable from outside the container
