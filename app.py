@@ -51,6 +51,10 @@ def home():
 def topics():
     return render_template("topics.html", min_topics=MIN_TOPICS, max_topics=MAX_TOPICS)
 
+@app.route("/privacy")  # GET-only: static page, no form data involved
+def privacy():
+    return render_template("privacy.html")
+
 @app.route("/analyze-topics", methods=["POST"])  # POST-only: receives the submitted topic list
 def analyze_topics():
     raw_topics = request.form.getlist("topics")  # every field named "topics", regardless of how many exist

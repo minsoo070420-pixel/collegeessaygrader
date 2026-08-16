@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Privacy — College Essay Grader</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>How We Handle Your Essay</h1>
+
+        <section>
+            <h2>We don't store it</h2>
+            <p>There is no database in this app. Once your results page loads, your essay isn't kept
+            anywhere on the server — it exists only in memory for the few seconds it takes to process
+            your request, then it's gone.</p>
+        </section>
+
+        <section>
+            <h2>We don't log it</h2>
+            <p>Server logs never record what you actually submitted — only technical details like
+            whether a request succeeded, never your essay's content.</p>
+        </section>
+
+        <section>
+            <h2>It is sent to Google's Gemini AI</h2>
+            <p>To generate your feedback, your essay is sent to Google's Gemini API, which is what
+            actually reads and grades it — this is required for the AI feedback feature to work at
+            all. This app currently runs on Gemini's free tier, and under Google's own policy,
+            content submitted on the free tier may be used by Google to improve their models. Keep
+            that in mind before submitting anything you'd want to keep fully private.</p>
+        </section>
+
+        <section>
+            <h2>My personal commitment to you</h2>
+            <p>Beyond what's required to generate your feedback, I will never read, share, sell, or
+            otherwise use your essay for any purpose. This site was built to give students honest,
+            useful feedback — not to collect or exploit anyone's personal writing.</p>
+        </section>
+
+        <a href="/" class="back-link">&larr; Back to essay grader</a>
+    </div>
+
+    <footer class="site-footer">Built by a Northwestern Class of 2029 admit.</footer>
+</body>
+</html>
