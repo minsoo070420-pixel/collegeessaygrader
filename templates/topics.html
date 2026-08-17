@@ -24,6 +24,19 @@
             <p>{{ analysis.overall_advice }}</p>
         </section>
 
+        <section class="deeper-section">
+            <h2 class="deeper-heading">Three Ways to Develop This Topic</h2>
+            {% for dev in analysis.recommended_topic_developments %}
+            <div class="card expansion-card">
+                <p class="label">Direction</p>
+                <p><strong>{{ dev.direction }}</strong></p>
+
+                <p class="label">How to develop it</p>
+                <p>{{ dev.description }}</p>
+            </div>
+            {% endfor %}
+        </section>
+
         <section>
             <h2>Topic Breakdown</h2>
             {% for t in analysis.topics %}

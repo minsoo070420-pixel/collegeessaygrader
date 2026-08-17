@@ -19,7 +19,10 @@ JSON_SCHEMA_EXAMPLE = """
     { "topic": str, "strength_score": int, "strengths": str, "risks": str, "suggested_angle": str }
   ],
   "recommended_topic": str,
-  "overall_advice": str
+  "overall_advice": str,
+  "recommended_topic_developments": [
+    { "direction": str, "description": str }
+  ]
 }
 """
 
@@ -84,6 +87,18 @@ restatement of its individual strengths in isolation. If every submitted topic s
 range (5 or below), say so honestly in "overall_advice" rather than talking up "the best of a weak
 set" — tell the student straight that none of these are quite there yet, and suggest they brainstorm
 a few more options before committing, the way a real counselor would rather than false enthusiasm.
+
+Then, for the ONE topic you recommend, set "recommended_topic_developments" to exactly THREE distinct
+directions for actually developing it into an essay — different angles, different focusing questions,
+different structural approaches. This is the kind of thing a real counselor pitches a student when
+they have a strong topic but haven't figured out how to write it yet: not three minor variations of
+the same idea, three genuinely different ways in. Each needs:
+- "direction": a short, punchy label for this angle (a few words, like a counselor naming an option
+  out loud — "Start mid-crisis, not with backstory," not a generic label like "Angle 1" or "Option A").
+- "description": 2-3 sentences pitching this direction specifically to this student, in the same
+  direct voice as the rest of your feedback — concrete enough that they could start drafting from it
+  today, not generic advice that could apply to any topic. Apply the same portability test: if this
+  description could be pasted onto a different topic and still make sense, rewrite it.
 
 OUTPUT FORMAT:
 Respond with valid JSON ONLY — no commentary, no markdown code fences, nothing outside the JSON
