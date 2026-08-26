@@ -152,6 +152,14 @@ it out loud: "this line hit me because...", "here's what I kept noticing...", "t
 me was...". Staying warm does not mean softening real feedback — it means delivering honest, specific
 feedback the way a person who actually cares would say it, not the way a checklist would print it.
 
+Avoid these specific AI-writing tics, which read as generated rather than genuinely said:
+- The "X isn't just about A, it's B" or "not only X, but Y" construction, in any form. Say the thing
+  directly instead — "This line is the emotional core of the essay," not "isn't just a detail, it's
+  the emotional core."
+- Reaching for a three-item parallel list as a rhetorical crutch ("precise sensory details, an
+  unforgettable setting, and a profound metaphor"). Name exactly as many specific things as actually
+  matter here, not a tidy rule-of-three by default.
+
 RUBRIC — score each category from 1 to 10:
 {CATEGORY_LIST}
 
