@@ -163,12 +163,28 @@ Avoid these specific AI-writing tics, which read as generated rather than genuin
 RUBRIC — score each category from 1 to 10:
 {CATEGORY_LIST}
 
-SCORING ANCHORS (apply consistently across all categories):
-- 9-10: publishable quality — this passage could run in a literary magazine as-is.
-- 5-6: competent but forgettable — technically fine, but an admissions officer would not remember it
-  after reading 50 essays that day.
-- 1-3: fundamental structural problems — the issue isn't polish, it's that something core is missing
-  or broken.
+SCORING ANCHORS (apply consistently across all categories) — score generously relative to a genuine
+high schooler's real effort, not against professional or published writing:
+- 9-10: exceptional — genuinely distinctive and well-crafted, the kind of writing that would stand
+  out even among strong applicants.
+- 6-8: solid and sincere — real personal specificity and reflection are present, even if the craft
+  has real, fixable rough edges (an abstract opening, some repetition, uneven pacing, a pivot into
+  future plans instead of continued reflection). Most honest, specific essays from a real teenager
+  belong here, not below it — this is the default range for "genuine but imperfect," not a rare
+  achievement.
+- 4-5: workable but underdeveloped — some genuine specificity exists, but the reflection or craft is
+  thin enough that it needs real revision to land.
+- 1-3: reserved specifically for essays with no real personal specificity or reflection at all — pure
+  cliché, a resume-style list, or something so generic it could describe any applicant on any topic.
+  Do not use this range just because an essay has rough, fixable craft issues.
+
+Never let the numeric score contradict a genuinely sincere, specific essay's real value. The score
+measures how close the writing is to its own best version, not how close it is to professional prose
+— a real, specific, meaningful essay with clumsy execution should score as "needs real work" (6-ish),
+not as "broken" (1-3). Reserve the harshest scores for essays that are actually generic or hollow, not
+ones that are simply imperfect. This calibration applies to scores only — every "feedback",
+"improvement", "why_it_matters", and "suggested_direction" field must stay exactly as specific,
+concrete, and unsparing as before; only the number attached to that feedback should be less punishing.
 
 RULES YOU MUST FOLLOW:
 1. For every one of the 10 categories, you must quote the exact excerpt from the essay (copied
@@ -181,6 +197,15 @@ RULES YOU MUST FOLLOW:
    underlying issue, describe it differently and specific to that category's lens.
 5. Even for categories that score 8-10, you must still name at least one genuine improvement area —
    no category gets a free pass with no critique.
+6. In "feedback", "why_it_matters", and "overall_summary", never state a name, scene, setting, or
+   action as if it happened in the essay unless it is actually there. If a person, place, or detail is
+   unnamed or unspecified, refer to it exactly as the essay does ("your friend," not a made-up name;
+   "that moment," not an invented location) — fabricating specifics to sound more concrete is worse
+   than being less concrete, because it breaks the student's trust that you actually read what they
+   wrote. In "improvement" and "suggested_direction" only, you may propose a hypothetical scene or
+   detail the student could write toward, but it must be framed explicitly as a suggestion ("consider
+   describing the exact moment when...") — never phrased as a description of something that already
+   happened.
 
 BANNED GENERIC FEEDBACK:
 The following are examples of feedback that must NEVER appear, in any category, in any field, because
@@ -213,8 +238,8 @@ only makes sense in reference to a specific word, image, claim, or detail that a
 THIS essay. Never use a bare category label ("flow," "vocabulary," "structure," "voice," "potential")
 without pointing to the specific text that demonstrates it.
 
-ADDITIONALLY — identify between 2 and 4 specific moments in the essay that are underdeveloped and
-could be expanded. For each one:
+ADDITIONALLY — identify exactly 3 specific moments in the essay that are underdeveloped and could be
+expanded. For each one:
 - Quote the exact sentence from the essay (verbatim).
 - Explain specifically why it's a missed opportunity (not a generic "this could be better") — apply
   the portability test above to "why_it_matters" and "suggested_direction" as well.
