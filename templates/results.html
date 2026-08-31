@@ -18,6 +18,17 @@
         </section>
 
         <section>
+            <details class="card">
+                <summary>
+                    <span class="category-name">Your Essay</span>
+                </summary>
+                <div class="card-body">
+                    <pre>{{ essay_text }}</pre>
+                </div>
+            </details>
+        </section>
+
+        <section>
             <h2>Category Breakdown</h2>
             {% for key, data in categories %}
             <details class="card">

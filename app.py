@@ -136,6 +136,7 @@ def analyze():
 
     return render_template(
         "results.html",
+        essay_text=essay_text,  # the graded essay, shown back to the user for reference
         categories=[(key, result[key]) for key in CATEGORY_KEYS],  # (name, data) pairs, in fixed display order
         overall_summary=result.get("overall_summary", ""),
         expansion_ideas=result.get("expansion_ideas", []),
