@@ -24,7 +24,8 @@ CATEGORY_KEYS = [
 
 # The 10 rubric categories, using the exact JSON keys the model must return.
 CATEGORY_LIST = """
-1. authenticity — High 9-10: Voice feels genuine and specific to this student; something only they could have written; avoids generic "helping others" or "overcoming adversity" framing used to impress. Calibration: "My grandmother's kimchi always tasted a little too salty, and I've spent four years trying to replicate that exact wrongness"
+1. authenticity — High 9-10: Voice feels genuine and specific to this student; something only they could have written; avoids generic "helping others" or "overcoming adversity" framing used to impress.
+    Calibration: "My 3D printer failed eleven times before I figured out the bed wasn't level, and I still get an unreasonable amount of satisfaction watching the first layer stick clean."
     Middle 7-8: Mostly genuine; one or two moments feel slightly staged or adult-sounding.
     Calibration: "I spent that whole tournament nursing a blistered heel and a losing bracket, and somewhere between the third loss and the parking lot, I learned that resilience isn't about winning."
     Lower Middle 4-6: Readable but generic in places; could plausibly have been written by several different applicants.
@@ -33,7 +34,7 @@ CATEGORY_LIST = """
     Calibration: "That day, I realized I wanted to dedicate my life to helping others less fortunate than me."
 
 2. personal_reflection — High 9-10: Genuine introspection — shows how the student's thinking, values, or self-understanding changed, not just what happened. Actively reveals who the writer is. Show but don't tell. Also unique to the applicant.
-    Calibration: "I used to think being the only one who spoke English at parent-teacher conferences made me my family's translator; now I think it made me its editor, deciding which worries were worth repeating and which ones I could carry alone."
+    Calibration: "I used to think losing a chess game meant I'd calculated wrong; now I think it usually means I'd decided what I wanted to happen before I looked at what was actually on the board.."
     Middle 7-8: Some reflection present but occasionally slides back into narration.
     Calibration: "Coaching my little sister's soccer team taught me that patience looks different depending on who needs it, though I still catch myself losing it faster with her than with anyone else."
     Lower Middle 4-6: States a lesson but doesn't examine it; reflection feels tacked on rather than woven through.
@@ -41,8 +42,7 @@ CATEGORY_LIST = """
     Low 1-3: Describes events without examining them; stays on the surface; tells without reflecting.
     Calibration: "I learned that we should never give up, no matter what."
 
-3. unique_perspective — High (9-10): The angle the student takes on their topic is distinctly theirs, even if the topic itself is common.
-    Calibration: "Most people describe their grandmother's death through grief; I remember it mostly through inheritance tax forms, and how strange it was to reduce someone I loved into a series of line items."
+2. unique_perspective - High (9-10): The angle the student takes on their topic is distinctly theirs, even if the topic itself is common — or the student deliberately juxtaposes two distinct angles/experiences where the contrast itself is the insight (use the same "removing either would break it" test as theme_and_focus).    Calibration: "Most people describe their grandmother's death through grief; I remember it mostly through inheritance tax forms, and how strange it was to reduce someone I loved into a series of line items."
     Middle (7-8): The writer has a somewhat distinct perspective, but parts could still be swapped into another applicant's essay.
     Calibration: "Working at my family's restaurant taught me about hard work, though I know that's a sentence a thousand other kids of restaurant owners could write."
     Lower middle (4-6): Topic is common and the angle does not clearly distinguish it from other applicants.
