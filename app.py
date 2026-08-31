@@ -45,42 +45,53 @@ def _daily_limit_reached():
     return False
 
 def annotate_essay(essay_text, categories, expansion_ideas):
-    """Wraps each quoted excerpt found in essay_text with a highlighted <mark> tag, so the
-    results page can show feedback in context. Returns a Markup object (pre-escaped, safe to
-    render directly in the template without Jinja re-escaping it).
+    """Wraps each quoted excerpt found in essay_text with a numbered, highlighted <mark> tag,
+    like a Google-Docs-style comment marker. Returns (annotated_html, comments):
+
+    - annotated_html: a Markup object (pre-escaped, safe to render directly without Jinja
+      re-escaping it) with each matched excerpt wrapped in <mark> and a small superscript number.
+    - comments: a list of {"number", "label", "text", "css_class"} dicts, in the same
+      left-to-right order the numbers appear in the essay, meant to be listed below it.
 
     Quotes that can't be found verbatim in the essay (the AI isn't always perfectly literal
     despite the rules) are simply skipped — this never raises an error.
     """
-    # (start, end, label) for every quote that's an exact substring of the essay
+    # (start, end, label, css_class, comment_text) for every quote that's an exact substring
     spans = []
     for key, data in categories:
         quote = data.get("quote", "")
         start = essay_text.find(quote) if quote else -1
         if start != -1:
             label = key.replace("_", " ").title()
-            spans.append((start, start + len(quote), label, "annotation-primary"))
+            spans.append((start, start + len(quote), label, "annotation-primary", data.get("feedback", "")))
     for idea in expansion_ideas:
         excerpt = idea.get("excerpt", "")
         start = essay_text.find(excerpt) if excerpt else -1
         if start != -1:
-            spans.append((start, start + len(excerpt), "Where You Could Go Deeper", "annotation-accent"))
+            spans.append((
+                start, start + len(excerpt), "Where You Could Go Deeper", "annotation-accent",
+                idea.get("why_it_matters", ""),
+            ))
 
     spans.sort(key=lambda s: s[0])  # process left-to-right through the essay
 
     pieces = []
+    comments = []
     cursor = 0
-    for start, end, label, css_class in spans:
+    number = 1
+    for start, end, label, css_class, comment_text in spans:
         if start < cursor:  # overlaps a span already placed — skip rather than produce broken markup
             continue
         pieces.append(escape(essay_text[cursor:start]))  # plain text before this quote, escaped
-        pieces.append(Markup(f'<mark class="{css_class}" title="{escape(label)}">'))
+        pieces.append(Markup(f'<mark class="{css_class}">'))
         pieces.append(escape(essay_text[start:end]))  # the quote itself, escaped
-        pieces.append(Markup("</mark>"))
+        pieces.append(Markup(f'<sup class="annotation-number">{number}</sup></mark>'))
+        comments.append({"number": number, "label": label, "text": comment_text, "css_class": css_class})
         cursor = end
+        number += 1
     pieces.append(escape(essay_text[cursor:]))  # whatever's left after the last quote
 
-    return Markup("").join(pieces)
+    return Markup("").join(pieces), comments
 
 @app.route("/")  # runs when a browser visits the root URL ("/")
 def home():
@@ -175,10 +186,12 @@ def analyze():
 
     categories = [(key, result[key]) for key in CATEGORY_KEYS]  # (name, data) pairs, in fixed display order
     expansion_ideas = result.get("expansion_ideas", [])
+    annotated_essay, essay_comments = annotate_essay(essay_text, categories, expansion_ideas)
 
     return render_template(
         "results.html",
-        annotated_essay=annotate_essay(essay_text, categories, expansion_ideas),
+        annotated_essay=annotated_essay,
+        essay_comments=essay_comments,
         categories=categories,
         overall_summary=result.get("overall_summary", ""),
         expansion_ideas=expansion_ideas,

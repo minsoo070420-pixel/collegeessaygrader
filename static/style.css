@@ -287,7 +287,6 @@ mark.annotation-primary {
     color: inherit;                             /* keep the essay's normal text color */
     border-radius: 3px;
     padding: 0 2px;
-    cursor: help;                                /* signals there's a tooltip on hover */
 }
 
 mark.annotation-accent {
@@ -295,7 +294,65 @@ mark.annotation-accent {
     color: inherit;
     border-radius: 3px;
     padding: 0 2px;
-    cursor: help;
+}
+
+.annotation-number {
+    font-size: 0.7em;
+    font-weight: 700;
+    margin-left: 1px;
+    color: var(--color-primary);
+}
+
+mark.annotation-accent .annotation-number {
+    color: var(--color-accent);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-card {
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 0.9rem;
+}
+
+.comment-card.annotation-primary {
+    background-color: var(--color-primary-tint);
+    border-left: 3px solid var(--color-primary);
+}
+
+.comment-card.annotation-accent {
+    background-color: var(--color-accent-tint);
+    border-left: 3px solid var(--color-accent);
+}
+
+.comment-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 6px;
+}
+
+.comment-number.annotation-accent {
+    background-color: var(--color-accent);
+}
+
+.comment-label {
+    font-weight: 600;
+}
+
+.comment-card p {
+    margin: 4px 0 0 0;
 }
 
 /* --- /privacy page --- */

@@ -18,13 +18,26 @@
         </section>
 
         <section>
-            <details class="card">
+            <details class="card" open>
                 <summary>
                     <span class="category-name">Your Essay</span>
                 </summary>
                 <div class="card-body">
-                    <p class="field-hint">Highlighted text is quoted somewhere in the feedback below — hover to see which category.</p>
+                    <p class="field-hint">Numbered highlights match the comments listed below.</p>
                     <pre>{{ annotated_essay }}</pre>
+
+                    {% if essay_comments %}
+                    <p class="label" style="margin-top: 16px;">Comments</p>
+                    <div class="comments-list">
+                        {% for c in essay_comments %}
+                        <div class="comment-card {{ c.css_class }}">
+                            <span class="comment-number {{ c.css_class }}">{{ c.number }}</span>
+                            <span class="comment-label">{{ c.label }}</span>
+                            <p>{{ c.text }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </details>
         </section>
