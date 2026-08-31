@@ -1,5 +1,6 @@
 import os                  # reads PORT and FLASK_DEBUG from the environment
 from datetime import date  # used to detect when a new calendar day starts, to reset the daily count
+from markupsafe import Markup, escape  # builds safe HTML manually, for annotating the essay display
 from flask import Flask, render_template, request  # render_template loads HTML files; request reads form data
 from grading import grade_essay, CATEGORY_KEYS  # the grading call, plus the fixed display order for categories
 from topic_analysis import analyze_topics as compare_topics  # aliased to avoid clashing with the view function below
@@ -42,6 +43,44 @@ def _daily_limit_reached():
     _gemini_call_count += 1  # counted before the caller's Gemini call, since reaching Gemini uses
                               # a quota slot even if the response later fails to parse
     return False
+
+def annotate_essay(essay_text, categories, expansion_ideas):
+    """Wraps each quoted excerpt found in essay_text with a highlighted <mark> tag, so the
+    results page can show feedback in context. Returns a Markup object (pre-escaped, safe to
+    render directly in the template without Jinja re-escaping it).
+
+    Quotes that can't be found verbatim in the essay (the AI isn't always perfectly literal
+    despite the rules) are simply skipped — this never raises an error.
+    """
+    # (start, end, label) for every quote that's an exact substring of the essay
+    spans = []
+    for key, data in categories:
+        quote = data.get("quote", "")
+        start = essay_text.find(quote) if quote else -1
+        if start != -1:
+            label = key.replace("_", " ").title()
+            spans.append((start, start + len(quote), label, "annotation-primary"))
+    for idea in expansion_ideas:
+        excerpt = idea.get("excerpt", "")
+        start = essay_text.find(excerpt) if excerpt else -1
+        if start != -1:
+            spans.append((start, start + len(excerpt), "Where You Could Go Deeper", "annotation-accent"))
+
+    spans.sort(key=lambda s: s[0])  # process left-to-right through the essay
+
+    pieces = []
+    cursor = 0
+    for start, end, label, css_class in spans:
+        if start < cursor:  # overlaps a span already placed — skip rather than produce broken markup
+            continue
+        pieces.append(escape(essay_text[cursor:start]))  # plain text before this quote, escaped
+        pieces.append(Markup(f'<mark class="{css_class}" title="{escape(label)}">'))
+        pieces.append(escape(essay_text[start:end]))  # the quote itself, escaped
+        pieces.append(Markup("</mark>"))
+        cursor = end
+    pieces.append(escape(essay_text[cursor:]))  # whatever's left after the last quote
+
+    return Markup("").join(pieces)
 
 @app.route("/")  # runs when a browser visits the root URL ("/")
 def home():
@@ -134,12 +173,15 @@ def analyze():
             "index.html", error="The AI response could not be understood. Please try again.", **render_kwargs
         ), 500
 
+    categories = [(key, result[key]) for key in CATEGORY_KEYS]  # (name, data) pairs, in fixed display order
+    expansion_ideas = result.get("expansion_ideas", [])
+
     return render_template(
         "results.html",
-        essay_text=essay_text,  # the graded essay, shown back to the user for reference
-        categories=[(key, result[key]) for key in CATEGORY_KEYS],  # (name, data) pairs, in fixed display order
+        annotated_essay=annotate_essay(essay_text, categories, expansion_ideas),
+        categories=categories,
         overall_summary=result.get("overall_summary", ""),
-        expansion_ideas=result.get("expansion_ideas", []),
+        expansion_ideas=expansion_ideas,
     )
 
 if __name__ == "__main__":  # ensures this only runs when you execute `python app.py` directly

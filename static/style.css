@@ -280,6 +280,24 @@ blockquote {
     color: var(--color-primary);
 }
 
+/* --- Annotated essay display (results page) --- */
+
+mark.annotation-primary {
+    background-color: rgba(22, 35, 63, 0.15);  /* light navy tint, matches category cards */
+    color: inherit;                             /* keep the essay's normal text color */
+    border-radius: 3px;
+    padding: 0 2px;
+    cursor: help;                                /* signals there's a tooltip on hover */
+}
+
+mark.annotation-accent {
+    background-color: rgba(156, 90, 23, 0.2);  /* light amber tint, matches "Go Deeper" cards */
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 2px;
+    cursor: help;
+}
+
 /* --- /privacy page --- */
 
 section h2 {
