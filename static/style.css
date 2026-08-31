@@ -283,17 +283,17 @@ blockquote {
 /* --- Annotated essay display (results page) --- */
 
 mark.annotation-primary {
-    background-color: rgba(22, 35, 63, 0.15);  /* light navy tint, matches category cards */
+    background-color: rgba(22, 35, 63, 0.1);  /* subtle navy tint — restrained, not a highlighter */
     color: inherit;                             /* keep the essay's normal text color */
-    border-radius: 3px;
-    padding: 0 2px;
+    border-radius: 2px;
+    padding: 0 1px;
 }
 
 mark.annotation-accent {
-    background-color: rgba(156, 90, 23, 0.2);  /* light amber tint, matches "Go Deeper" cards */
+    background-color: rgba(156, 90, 23, 0.12);  /* subtle amber tint, same restraint */
     color: inherit;
-    border-radius: 3px;
-    padding: 0 2px;
+    border-radius: 2px;
+    padding: 0 1px;
 }
 
 .annotation-number {
@@ -330,21 +330,14 @@ mark.annotation-accent .annotation-number {
 }
 
 .comment-number {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: var(--color-primary);
-    color: white;
-    font-size: 0.7rem;
     font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--color-primary);
     margin-right: 6px;
 }
 
 .comment-number.annotation-accent {
-    background-color: var(--color-accent);
+    color: var(--color-accent);
 }
 
 .comment-label {
