@@ -238,8 +238,11 @@ only makes sense in reference to a specific word, image, claim, or detail that a
 THIS essay. Never use a bare category label ("flow," "vocabulary," "structure," "voice," "potential")
 without pointing to the specific text that demonstrates it.
 
-ADDITIONALLY — identify exactly 3 specific moments in the essay that are underdeveloped and could be
-expanded. For each one:
+ADDITIONALLY — the "expansion_ideas" array MUST contain EXACTLY 3 items. Not 1, not 2, not 4 — always
+3, no matter how short or how strong the essay is. If you struggle to find 3 clearly underdeveloped
+moments, pick the 3 moments with the most remaining room to grow, even in a strong essay — every essay
+has at least 3 sentences that could be pushed further. Identify exactly 3 specific moments in the
+essay that are underdeveloped and could be expanded. For each one:
 - Quote the exact sentence from the essay (verbatim).
 - Explain specifically why it's a missed opportunity (not a generic "this could be better") — apply
   the portability test above to "why_it_matters" and "suggested_direction" as well.
