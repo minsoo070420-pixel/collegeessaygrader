@@ -53,25 +53,26 @@ def annotate_essay(essay_text, categories, expansion_ideas):
     - comments: a list of {"number", "label", "text", "css_class"} dicts, in the same
       left-to-right order the numbers appear in the essay, meant to be listed below it.
 
+    Colors alternate by position (1st, 3rd, 5th... = accent; 2nd, 4th, 6th... = primary),
+    not by category vs. expansion-idea type — this makes adjacent comments visually distinct
+    from each other, regardless of which kind of feedback they are.
+
     Quotes that can't be found verbatim in the essay (the AI isn't always perfectly literal
     despite the rules) are simply skipped — this never raises an error.
     """
-    # (start, end, label, css_class, comment_text) for every quote that's an exact substring
+    # (start, end, label, comment_text) for every quote that's an exact substring of the essay
     spans = []
     for key, data in categories:
         quote = data.get("quote", "")
         start = essay_text.find(quote) if quote else -1
         if start != -1:
             label = key.replace("_", " ").title()
-            spans.append((start, start + len(quote), label, "annotation-primary", data.get("feedback", "")))
+            spans.append((start, start + len(quote), label, data.get("feedback", "")))
     for idea in expansion_ideas:
         excerpt = idea.get("excerpt", "")
         start = essay_text.find(excerpt) if excerpt else -1
         if start != -1:
-            spans.append((
-                start, start + len(excerpt), "Where You Could Go Deeper", "annotation-accent",
-                idea.get("why_it_matters", ""),
-            ))
+            spans.append((start, start + len(excerpt), "Where You Could Go Deeper", idea.get("why_it_matters", "")))
 
     spans.sort(key=lambda s: s[0])  # process left-to-right through the essay
 
@@ -79,9 +80,10 @@ def annotate_essay(essay_text, categories, expansion_ideas):
     comments = []
     cursor = 0
     number = 1
-    for start, end, label, css_class, comment_text in spans:
+    for start, end, label, comment_text in spans:
         if start < cursor:  # overlaps a span already placed — skip rather than produce broken markup
             continue
+        css_class = "annotation-accent" if number % 2 == 1 else "annotation-primary"  # alternate by position
         pieces.append(escape(essay_text[cursor:start]))  # plain text before this quote, escaped
         pieces.append(Markup(f'<mark class="{css_class}">'))
         pieces.append(escape(essay_text[start:end]))  # the quote itself, escaped
