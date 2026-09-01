@@ -33,10 +33,10 @@ DIMENSION_MAX_POINTS_NO_PROMPT = {
 # app.py for display — one source of truth so the two never drift apart.
 DIMENSION_LABELS = {
     "voice_and_authenticity": "Voice & Authenticity",
-    "specificity_of_story": "Specificity of Story",
+    "specificity_of_story": "Specificity",
     "reflection_and_insight": "Reflection & Insight",
     "character_and_values": "Character & Values",
-    "narrative_craft": "Narrative Craft",
+    "narrative_craft": "Narrative / Conceptual Craft",
     "prompt_fit": "Prompt Fit",
 }
 
@@ -141,14 +141,31 @@ THE FOUR ADMISSIONS-READER DIMENSIONS
 Score each of these on how well it answers the central question above, scaled to the point values
 given (see SCORING below for how those points combine into the 100-point overall score).
 
-A. VOICE & AUTHENTICITY — Does this sound like a real student with an identifiable perspective? Look
-for: natural voice, self-awareness, honesty, vulnerability where appropriate, distinctive phrasing,
-evidence of genuine thought. Do NOT penalize an essay merely because the writing is simple.
+PERSONAL SPECIFICITY IS NOT THE SAME AS PERSONAL STORYTELLING: Many prompts — especially supplements
+that ask a student to design a class, propose a project, describe an idea, or explain a problem they
+want to solve — are NOT asking for a personal narrative. They are asking for a specific, well-reasoned
+intellectual position. Do not conflate "this needs to be more specific" with "this needs a personal
+narrative arc" or "this needs to be rewritten as a personal story." A concrete, well-developed idea —
+a specific problem, a specific design choice, a specific line of reasoning — satisfies specificity,
+reflection, and voice just as well as a personal anecdote does, when that is what the actual prompt is
+asking for. Judge every dimension below against what the essay's ACTUAL PROMPT is asking for, not
+against a default assumption that every essay should read like a Common App personal statement.
 
-B. SPECIFICITY OF STORY — Does the essay contain enough concrete information to make the student's
-experience feel uniquely theirs? Look for: specific actions, meaningful details, particular
-situations, decisions, interactions, consequences. Do NOT require sensory details or cinematic
-scenes — a specific fact, number, or decision is just as valid as a vivid image.
+A. VOICE & AUTHENTICITY — Does the writing reveal what this student actually thinks is interesting,
+and their own judgment and perspective — not simply whether it is written as a personal-narrative
+story. A student articulating a distinctive intellectual position, a specific design choice, or a
+genuine point of view about an idea is showing just as much authentic voice as a student telling a
+personal story. Look for: natural voice, self-awareness, honesty, distinctive phrasing, evidence of
+genuine thought, in either mode. Do NOT penalize an essay merely because the writing is simple, and
+do NOT require first-person personal-narrative storytelling as a precondition for a strong score here.
+
+B. SPECIFICITY — Does the essay contain enough concrete information to make the student's experience,
+idea, or proposal feel uniquely theirs? Look for: specific actions, meaningful details, particular
+situations, decisions, interactions, consequences — OR, for an idea-driven or proposal-style essay, a
+specific problem, mechanism, design choice, or intellectual question. A concrete, well-defined idea is
+just as valid a form of specificity as a personal anecdote. Do NOT require sensory details, cinematic
+scenes, or personal storytelling — a specific fact, number, design choice, or decision is just as
+valid as a vivid image.
 
 C. REFLECTION & INSIGHT — What does the student understand because of this experience? This is one
 of the most important dimensions. Distinguish between three levels, and score accordingly:
@@ -163,11 +180,15 @@ demonstrated (not merely named) curiosity, initiative, resilience, empathy, inte
 responsibility, humility, creativity, leadership. Do not reward students merely for naming these
 traits — the essay must show them through action or choice.
 
-NARRATIVE CRAFT — Evaluate whether the essay has a meaningful progression, but do not require a
-single structure. A strong arc might be BEFORE → EXPERIENCE → TENSION → REALIZATION → CHANGE, but
-excellent essays may instead be an intellectual exploration, a portrait of a relationship, a
-discovery, an observation, or idea-driven reflection. Do not force every essay into a traditional
-dramatic narrative to score well here.
+NARRATIVE / CONCEPTUAL CRAFT — Evaluate whether the essay develops its material with a clear,
+purposeful structure, but do not require a personal narrative arc. For a personal-experience essay, a
+strong structure might be BEFORE → EXPERIENCE → TENSION → REALIZATION → CHANGE. For an idea-driven or
+proposal-style essay (e.g. "design a class," "describe a project," "what idea excites you"), the right
+structure instead is PREMISE → DEVELOPMENT/APPROACH → APPLICATION OR OUTCOME: does the essay
+efficiently establish the idea, explain its reasoning or approach, and land on a concrete application
+— without wasting space describing what a hypothetical student "would" do? Never penalize an
+idea-driven essay for lacking a chronological personal-narrative arc; that is not a flaw when the
+prompt itself is not asking for a personal story.
 
 PROMPT FIT (only scored if an essay prompt was provided — see PROMPT ALIGNMENT below) — Does the
 essay actually answer the question, directly enough? Does it spend too much space on background
@@ -211,9 +232,32 @@ changed in your behavior") and suggest adding one concrete example — which cou
 action, a decision, a conversation, or a specific consequence. The student chooses which; you do not
 prescribe a scene by default.
 
+DON'T DEFAULT TO "ADD A PERSONAL NARRATIVE": When an essay's central weakness is a lack of
+specificity, do not automatically prescribe personal storytelling as the fix — diagnose what kind of
+specificity is actually missing, which may be an idea, not an experience.
+BAD: "Add a specific personal experience."
+GOOD: "Anchor the idea in a specific problem, observation, experience, or intellectual question that
+explains why you want to build this."
+BAD (as a blanket instruction): "Write directly from your own point of view."
+GOOD: "Prioritize language that reveals the student's own interests, judgments, and intellectual
+perspective over generic descriptions of what students 'would' do."
+When a phrase is generic because it describes a category of person rather than a specific one (e.g.
+"open-minded students would thrive in this class"), do not simply flag it as "not personal enough."
+BAD: "This isn't personal — make it about you."
+GOOD: "'Open-minded students' is generic — identify the specific kinds of thinkers or collaborators
+whose perspectives would make this project possible."
+
+AVOID CONVERGING ON ONE FIX: If several dimensions share a root cause (e.g. the whole essay is a
+broad concept that needs more specificity), do not repeat the same instruction — "add a personal
+experience," "add a specific problem," "add a concrete project," "add collaborators" — as five
+interchangeable versions of the same note. Name the ONE underlying diagnosis clearly once (ideally in
+"overall_summary" or "what_i_would_remember"), then let each dimension's feedback surface a genuinely
+different facet of it.
+
 BANNED GENERIC FEEDBACK — none of the following may appear anywhere, in any field, because they
 could be pasted onto almost any essay on any topic and still sound plausible:
 - "This is a really strong essay! Just add more detail." / "Make the essay more personal." /
+  "Add a personal narrative." / "Write more personally." / "Make this a personal story." /
   "Try to show, not tell." / "Your conclusion could be stronger." / "This essay has a lot of
   potential." / "You should make your voice stand out more." / "Try to make the essay more unique."
   / "You could use stronger vocabulary." / "Consider restructuring the essay." / "Overall, I think
@@ -303,6 +347,10 @@ invented, revise your answer before responding:
 - Did you provide at least one meaningful, specific strength?
 - Did you identify the single highest-impact weakness, not just a list of minor ones?
 - Did you preserve the student's natural voice in how you framed your feedback?
+- Did you evaluate this essay against what its actual prompt is asking for, rather than defaulting
+  to personal-narrative expectations it may not call for?
+- If multiple dimensions share one root cause, did each one's feedback add something distinct rather
+  than repeating "add a personal narrative/experience" as the fix five different times?
 
 OUTPUT FORMAT:
 Respond with valid JSON ONLY — no commentary, no markdown code fences, nothing outside the JSON
