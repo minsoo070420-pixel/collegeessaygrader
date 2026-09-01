@@ -12,10 +12,23 @@
     <div class="container">
         <h1>Your Essay Results</h1>
 
+        <section class="score-box">
+            <div class="score-number">{{ overall_score }}<span class="score-max">/100</span></div>
+            <div class="score-band">{{ score_band_label }}</div>
+            <p class="field-hint">This reflects the essay's current effectiveness, not your admissions chances.</p>
+        </section>
+
         <section class="summary-box">
             <h2>Overall Summary</h2>
             <p>{{ overall_summary }}</p>
         </section>
+
+        {% if what_i_would_remember %}
+        <section class="summary-box remember-box">
+            <h2>What I Would Remember</h2>
+            <p>{{ what_i_would_remember }}</p>
+        </section>
+        {% endif %}
 
         <section>
             <details class="card" open>
@@ -43,30 +56,52 @@
         </section>
 
         <section>
-            <h2>Category Breakdown</h2>
-            {% for key, data in categories %}
+            <h2>Dimension Breakdown</h2>
+            {% for key, data in dimensions %}
             <details class="card">
                 <summary>
-                    <span class="category-name">{{ key.replace('_', ' ').title() }}</span>
-                    <span class="score">{{ data.score }}/10</span>
+                    <span class="category-name">{{ dimension_labels.get(key, key) }}</span>
+                    <span class="score">{{ data.score }}/{{ data.max_points }}</span>
                 </summary>
                 <div class="card-body">
+                    {% if data.quote %}
                     <p class="label">Quoted excerpt</p>
                     <blockquote>{{ data.quote }}</blockquote>
+                    {% endif %}
 
                     <p class="label">Feedback</p>
                     <p>{{ data.feedback }}</p>
-
-                    <p class="label">Suggested improvement</p>
-                    <p>{{ data.improvement }}</p>
                 </div>
             </details>
             {% endfor %}
         </section>
 
+        {% if admissions_reader_concerns %}
+        <section>
+            <h2>Admissions Reader Concerns</h2>
+            <ul class="concerns-list">
+                {% for concern in admissions_reader_concerns %}
+                <li>{{ concern }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        {% if high_impact_revisions %}
+        <section>
+            <h2>High-Impact Revisions</h2>
+            {% for rev in high_impact_revisions %}
+            <div class="card revision-card impact-{{ rev.impact|lower }}">
+                <span class="impact-badge impact-{{ rev.impact|lower }}">{{ rev.impact }}</span>
+                <p>{{ rev.revision }}</p>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
         <section class="deeper-section">
             <h2 class="deeper-heading">Where You Could Go Deeper</h2>
-            {% for idea in expansion_ideas %}
+            {% for idea in deeper_ideas %}
             <div class="card expansion-card">
                 <p class="label">Quoted excerpt</p>
                 <blockquote>{{ idea.excerpt }}</blockquote>
@@ -74,8 +109,15 @@
                 <p class="label">Why it matters</p>
                 <p>{{ idea.why_it_matters }}</p>
 
-                <p class="label">Suggested direction</p>
-                <p>{{ idea.suggested_direction }}</p>
+                <p class="label">What's missing</p>
+                <p>{{ idea.what_is_missing }}</p>
+
+                <p class="label">Questions to explore</p>
+                <ul>
+                    {% for q in idea.questions_to_explore %}
+                    <li>{{ q }}</li>
+                    {% endfor %}
+                </ul>
             </div>
             {% endfor %}
         </section>

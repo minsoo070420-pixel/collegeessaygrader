@@ -2,7 +2,7 @@ import os                  # reads PORT and FLASK_DEBUG from the environment
 from datetime import date  # used to detect when a new calendar day starts, to reset the daily count
 from markupsafe import Markup, escape  # builds safe HTML manually, for annotating the essay display
 from flask import Flask, render_template, request  # render_template loads HTML files; request reads form data
-from grading import grade_essay, CATEGORY_KEYS  # the grading call, plus the fixed display order for categories
+from grading import grade_essay, DIMENSION_KEYS, DIMENSION_LABELS  # the grading call + dimension metadata
 from topic_analysis import analyze_topics as compare_topics  # aliased to avoid clashing with the view function below
 
 app = Flask(__name__)  # creates the Flask application object that routes attach to
@@ -44,7 +44,7 @@ def _daily_limit_reached():
                               # a quota slot even if the response later fails to parse
     return False
 
-def annotate_essay(essay_text, categories, expansion_ideas):
+def annotate_essay(essay_text, dimensions, deeper_ideas):
     """Wraps each quoted excerpt found in essay_text with a numbered, highlighted <mark> tag,
     like a Google-Docs-style comment marker. Returns (annotated_html, comments):
 
@@ -54,21 +54,22 @@ def annotate_essay(essay_text, categories, expansion_ideas):
       left-to-right order the numbers appear in the essay, meant to be listed below it.
 
     Colors alternate by position (1st, 3rd, 5th... = accent; 2nd, 4th, 6th... = primary),
-    not by category vs. expansion-idea type — this makes adjacent comments visually distinct
+    not by dimension vs. "go deeper" idea type — this makes adjacent comments visually distinct
     from each other, regardless of which kind of feedback they are.
 
     Quotes that can't be found verbatim in the essay (the AI isn't always perfectly literal
-    despite the rules) are simply skipped — this never raises an error.
+    despite the rules) are simply skipped — this never raises an error. prompt_fit has no
+    single quote (it judges the whole essay against the prompt), so it never produces a span.
     """
     # (start, end, label, comment_text) for every quote that's an exact substring of the essay
     spans = []
-    for key, data in categories:
+    for key, data in dimensions:
         quote = data.get("quote", "")
         start = essay_text.find(quote) if quote else -1
         if start != -1:
-            label = key.replace("_", " ").title()
+            label = DIMENSION_LABELS.get(key, key)
             spans.append((start, start + len(quote), label, data.get("feedback", "")))
-    for idea in expansion_ideas:
+    for idea in deeper_ideas:
         excerpt = idea.get("excerpt", "")
         start = essay_text.find(excerpt) if excerpt else -1
         if start != -1:
@@ -186,17 +187,28 @@ def analyze():
             "index.html", error="The AI response could not be understood. Please try again.", **render_kwargs
         ), 500
 
-    categories = [(key, result[key]) for key in CATEGORY_KEYS]  # (name, data) pairs, in fixed display order
-    expansion_ideas = result.get("expansion_ideas", [])
-    annotated_essay, essay_comments = annotate_essay(essay_text, categories, expansion_ideas)
+    dimension_data = result.get("dimensions", {})
+    # prompt_fit only exists in dimension_data when a prompt was given — append it last if present,
+    # rather than hardcoding it into DIMENSION_KEYS, which is shared with the no-prompt case too.
+    dimension_order = DIMENSION_KEYS + (["prompt_fit"] if "prompt_fit" in dimension_data else [])
+    dimensions = [(key, dimension_data[key]) for key in dimension_order if key in dimension_data]
+
+    deeper_ideas = result.get("where_you_could_go_deeper", [])
+    annotated_essay, essay_comments = annotate_essay(essay_text, dimensions, deeper_ideas)
 
     return render_template(
         "results.html",
         annotated_essay=annotated_essay,
         essay_comments=essay_comments,
-        categories=categories,
+        dimensions=dimensions,
+        dimension_labels=DIMENSION_LABELS,
+        overall_score=result.get("overall_score", 0),
+        score_band_label=result.get("score_band_label", ""),
+        what_i_would_remember=result.get("what_i_would_remember", ""),
+        admissions_reader_concerns=result.get("admissions_reader_concerns", []),
+        high_impact_revisions=result.get("high_impact_revisions", []),
+        deeper_ideas=deeper_ideas,
         overall_summary=result.get("overall_summary", ""),
-        expansion_ideas=expansion_ideas,
     )
 
 if __name__ == "__main__":  # ensures this only runs when you execute `python app.py` directly

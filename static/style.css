@@ -177,6 +177,99 @@ h2 {
     margin-top: 0;
 }
 
+.remember-box {
+    background-color: var(--color-accent-tint);
+    border-left-color: var(--color-accent);
+}
+
+.remember-box h2 {
+    color: var(--color-accent);
+}
+
+/* --- Overall score display --- */
+
+.score-box {
+    text-align: center;
+    padding: 20px;
+    border-radius: var(--radius);
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+}
+
+.score-number {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.score-max {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.score-band {
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 6px;
+}
+
+.score-box .field-hint {
+    margin: 8px 0 0 0;
+}
+
+/* --- Admissions reader concerns --- */
+
+.concerns-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.concerns-list li {
+    margin-bottom: 8px;
+}
+
+/* --- High-impact revisions --- */
+
+.revision-card {
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.revision-card p {
+    margin: 0;
+}
+
+.impact-badge {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.impact-badge.impact-high {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+.impact-badge.impact-medium {
+    background-color: var(--color-primary-tint);
+    color: var(--color-primary);
+}
+
+.impact-badge.impact-low {
+    background-color: var(--color-bg);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+}
+
 /* Category cards (blue/navy theme, matching --color-primary) */
 
 .card {
