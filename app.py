@@ -7,7 +7,7 @@ from topic_analysis import analyze_topics as compare_topics  # aliased to avoid 
 
 app = Flask(__name__)  # creates the Flask application object that routes attach to
 
-MIN_WORD_COUNT = 50   # essays shorter than this are rejected
+MIN_WORD_COUNT = 1    # essays shorter than this are rejected
 MAX_WORD_COUNT = 650  # essays longer than this are rejected
 
 DAILY_GEMINI_LIMIT = 100  # shared cap across every route that calls Gemini (essay grading AND topic analysis)
