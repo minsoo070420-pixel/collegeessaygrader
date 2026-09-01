@@ -313,6 +313,31 @@ h2 {
     padding: 16px 18px;
 }
 
+.dimension-columns {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.dimension-quote-col {
+    flex: 0 0 38%;
+}
+
+.dimension-quote-col blockquote {
+    margin: 0;
+}
+
+.dimension-feedback-col {
+    flex: 1;
+    min-width: 0; /* lets long feedback text wrap instead of forcing the column wider */
+}
+
+@media (max-width: 600px) {
+    .dimension-columns {
+        flex-direction: column;
+    }
+}
+
 .label {
     font-weight: 600;
     color: var(--color-text-muted);

@@ -71,6 +71,7 @@ JSON_SCHEMA_EXAMPLE = """
     "prompt_fit": { "score": int, "feedback": str }
   },
   "what_i_would_remember": str,
+  "strengths": [str],
   "admissions_reader_concerns": [str],
   "high_impact_revisions": [
     { "impact": "HIGH" | "MEDIUM" | "LOW", "revision": str }
@@ -120,6 +121,19 @@ read as generated rather than genuinely said:
 - The "X isn't just about A, it's B" or "not only X, but Y" construction, in any form.
 - Reaching for a three-item parallel list as a rhetorical crutch. Name exactly as many specific
   things as actually matter, not a tidy rule-of-three by default.
+
+PLAIN LANGUAGE, NOT LITERARY LANGUAGE: Never optimize your feedback for sounding insightful.
+Optimize for being accurate, specific, and useful. Do not use metaphors, dramatic language, or
+literary phrasing in your feedback unless it materially improves clarity — a plain, literal
+description almost always does more work than a figurative one, and it reads as more credible, not
+less.
+BAD: "You move from the court into the classroom without showing the bridge between these two
+worlds."
+GOOD: "This transition is underdeveloped: you jump from basketball to your group project without
+connecting the two."
+This applies to every field in your output, not just "feedback" — "admissions_reader_concerns",
+"high_impact_revisions", "why_it_matters", "overall_summary", all of it. If you notice yourself
+reaching for a metaphor, stop and state the actual, literal observation instead.
 
 ===============================
 THE FOUR ADMISSIONS-READER DIMENSIONS
@@ -222,6 +236,11 @@ OUTPUT FIELDS
 - "what_i_would_remember": 1-3 sentences answering "if I were reading hundreds of applications,
   what would I remember about this student after finishing this essay?" This is more valuable than
   generic writing advice — be specific to what this essay actually reveals.
+- "strengths": 2 or 3 genuine strengths, but ONLY ones that materially matter — do not manufacture
+  praise simply to fill a quota. Each must cite something specific and true in the essay (a moment,
+  a phrase, a choice), never generic praise like "this is well written" or "great job." Apply the
+  same portability test as everywhere else: if the sentence could be pasted onto a different
+  student's essay, rewrite it so it only makes sense here.
 - "admissions_reader_concerns": 2 or 3 concerns, but ONLY ones that materially matter — do not
   manufacture criticisms simply to fill a quota. If only two genuine concerns exist, list two.
 - "high_impact_revisions": revisions ranked by actual impact, each tagged "HIGH", "MEDIUM", or "LOW".
@@ -232,6 +251,12 @@ OUTPUT FIELDS
   For each: "excerpt" (verbatim quote), "why_it_matters", "what_is_missing", and
   "questions_to_explore" (2-3 questions). CRITICAL: do not answer these questions yourself and do
   not invent the student's experience — the student must supply the missing information.
+  Write each entry in "questions_to_explore" as a direct, warm coaching prompt, not a distant
+  interview question: a short imperative pointing at the specific moment, then a simple question
+  about it, then a nudge to keep going.
+  GOOD: "Think of the time when you found genuine joy from that. How did you feel? Expand on that."
+  LESS GOOD (too formal, too distant): "What is one specific interaction you had that stayed with
+  you?"
 - "overall_summary": one flowing paragraph (not labeled sub-sections) that naturally covers what's
   working, what holds the essay back, the single highest-impact revision, and what you would
   remember about this student — see the EXAMPLE below for the tone and structure to aim for.

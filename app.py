@@ -205,6 +205,7 @@ def analyze():
         overall_score=result.get("overall_score", 0),
         score_band_label=result.get("score_band_label", ""),
         what_i_would_remember=result.get("what_i_would_remember", ""),
+        strengths=result.get("strengths", []),
         admissions_reader_concerns=result.get("admissions_reader_concerns", []),
         high_impact_revisions=result.get("high_impact_revisions", []),
         deeper_ideas=deeper_ideas,

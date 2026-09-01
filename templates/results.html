@@ -65,16 +65,35 @@
                 </summary>
                 <div class="card-body">
                     {% if data.quote %}
-                    <p class="label">Quoted excerpt</p>
-                    <blockquote>{{ data.quote }}</blockquote>
-                    {% endif %}
-
+                    <div class="dimension-columns">
+                        <div class="dimension-quote-col">
+                            <p class="label">Quoted excerpt</p>
+                            <blockquote>{{ data.quote }}</blockquote>
+                        </div>
+                        <div class="dimension-feedback-col">
+                            <p class="label">Feedback</p>
+                            <p>{{ data.feedback }}</p>
+                        </div>
+                    </div>
+                    {% else %}
                     <p class="label">Feedback</p>
                     <p>{{ data.feedback }}</p>
+                    {% endif %}
                 </div>
             </details>
             {% endfor %}
         </section>
+
+        {% if strengths %}
+        <section>
+            <h2>Strengths</h2>
+            <ul class="concerns-list">
+                {% for strength in strengths %}
+                <li>{{ strength }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
 
         {% if admissions_reader_concerns %}
         <section>
