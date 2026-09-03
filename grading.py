@@ -224,19 +224,46 @@ wrote in real time, or does part of it read suspiciously smoothed-over, uniforml
 in a way that could look AI-assisted to an admissions reader? Cite something specific either way. This
 field is purely descriptive — it never changes "overall_score".
 
-Actively check for these concrete tells of AI-smoothed writing — the same tics banned elsewhere in
-this prompt for YOUR OWN voice apply equally when they show up in the STUDENT'S essay, and a cluster
-of two or more of these in one section is a real signal, not a stylistic nitpick:
-- The "not merely X, but Y" / "not just A, it's B" construction, especially used more than once.
-- Extended or repeated figurative language used for effect rather than clarity (e.g. "the quiet
-  engine behind everything I do," "not a barrier, but a bridge").
-- Suspiciously uniform sentence rhythm and paragraph length throughout, with no rough patches.
-- Zero small grammar or wording imperfections across a fairly long, personal essay — real drafts
-  almost always have at least one, and their total absence is itself a signal, not a strength.
-- Transitions that read like a professional essayist's phrasing rather than a teenager's own words.
-If you notice several of these clustered together, say so plainly and specifically — do not default
-to a reassuring answer just because the prose is fluent and grammatically correct. Fluent and generic
-is a different thing from authentic and specific.
+Actively check for tells of AI-smoothed writing — the same tics banned elsewhere in this prompt for
+YOUR OWN voice apply equally when they show up in the STUDENT'S essay. Weigh these unevenly:
+structural and rhetorical-template signals are far more diagnostic than individual word choices, and
+should drive your verdict far more than surface phrasing does.
+
+STRONG SIGNALS (architectural — these are the real tells, worth naming even on their own):
+- A rigid, evenly-proportioned arc that hits every beat too neatly — setup, challenge, turning point,
+  stated lesson, tidy closing — especially when each stage gets almost exactly the same amount of
+  space, unlike a real draft where some part usually runs long or gets rushed.
+- The contrastive-parallel template in ANY phrasing: "not merely X, but Y," "not just A, it's B,"
+  "didn't just teach me X, it taught me Y" are all the SAME underlying construction. One instance is
+  worth noting; more than one anywhere in the essay is a strong signal by itself.
+- A name-drop of a famous, historical, or public figure (a president, a well-known author, a
+  celebrity) used for rhetorical weight rather than tied to something specific and personal in the
+  student's own story — a common way to sound impressively broad without adding real substance.
+- Suspiciously uniform sentence rhythm and paragraph length throughout, with no rough patches, and
+  zero small grammar or wording imperfections across a fairly long personal essay.
+
+WEAK SIGNAL — DO NOT LEAN ON THIS ALONE:
+- A single common cliché or idiom ("a guiding light," "a wave of disappointment") is NOT reliable
+  evidence of AI writing by itself. Humans reach for clichés constantly, especially in unpolished
+  first drafts or under deadline pressure — flagging cliché phrasing as your main or only evidence is
+  a weak, easily-wrong inference. Mention a cliché only as a minor aside, and only when it also
+  co-occurs with a STRONG signal above; never let one or two clichéd phrases alone drive a "this
+  feels AI-written" verdict.
+
+Before writing "human_voice_note", check the essay against each STRONG SIGNAL in turn — do not just
+skim for whichever is easiest to spot:
+1. Does the essay's structure hit an evenly-paced arc (setup, challenge, turning point, lesson,
+   closing) with suspicious uniformity, each stage given about the same space?
+2. Does the contrastive-parallel template ("not X, but Y" / "didn't just X, it Y" / "not just A,
+   it's B") appear anywhere in the essay, even once?
+3. Is a famous, historical, or public figure named for rhetorical weight rather than personal
+   specificity?
+4. Is sentence rhythm and paragraph length suspiciously uniform, with zero small imperfections?
+Check all four before writing anything — do not stop as soon as you find one match. If two or more
+are true, name the combination explicitly (e.g. "the closing line uses X, and on top of that, Y") —
+that convergence is the real signal, stronger than any single one alone. Lead with the structural
+pattern(s) you found rather than individual word choices — architecture is what actually gives this
+away, not vocabulary.
 GOOD (authentic): "This reads like your own voice — the blunt, direct way you describe your own
 values ('service is at the core of who I am') is a real strength, not something to smooth over."
 GOOD (flagging a section): "The paragraph starting 'The Department's diverse research
