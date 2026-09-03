@@ -220,6 +220,19 @@ h2 {
     margin: 8px 0 0 0;
 }
 
+/* --- Human Voice --- */
+
+.voice-box {
+    padding: 15px 20px;
+    border-radius: var(--radius);
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+}
+
+.voice-box h2 {
+    margin-top: 0;
+}
+
 /* --- Admissions reader concerns --- */
 
 .concerns-list {

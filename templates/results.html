@@ -18,6 +18,13 @@
             <p class="field-hint">This reflects the essay's current effectiveness, not your admissions chances.</p>
         </section>
 
+        {% if human_voice_note %}
+        <section class="voice-box">
+            <h2>Human Voice</h2>
+            <p>{{ human_voice_note }}</p>
+        </section>
+        {% endif %}
+
         <section class="summary-box">
             <h2>Overall Summary</h2>
             <p>{{ overall_summary }}</p>
@@ -27,13 +34,6 @@
         <section class="summary-box remember-box">
             <h2>What I Would Remember</h2>
             <p>{{ what_i_would_remember }}</p>
-        </section>
-        {% endif %}
-
-        {% if human_voice_note %}
-        <section>
-            <h2>Human Voice</h2>
-            <p>{{ human_voice_note }}</p>
         </section>
         {% endif %}
 
