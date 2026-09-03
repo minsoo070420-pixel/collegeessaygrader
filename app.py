@@ -8,7 +8,7 @@ from topic_analysis import analyze_topics as compare_topics  # aliased to avoid 
 app = Flask(__name__)  # creates the Flask application object that routes attach to
 
 MIN_WORD_COUNT = 1    # essays shorter than this are rejected
-MAX_WORD_COUNT = 650  # essays longer than this are rejected
+MAX_WORD_COUNT = 900  # essays longer than this are rejected
 
 DAILY_GEMINI_LIMIT = 100  # shared cap across every route that calls Gemini (essay grading AND topic analysis)
                            # raised from 15 now that the app runs on the cheaper, higher-quota lite model
@@ -205,6 +205,7 @@ def analyze():
         overall_score=result.get("overall_score", 0),
         score_band_label=result.get("score_band_label", ""),
         what_i_would_remember=result.get("what_i_would_remember", ""),
+        human_voice_note=result.get("human_voice_note", ""),
         strengths=result.get("strengths", []),
         admissions_reader_concerns=result.get("admissions_reader_concerns", []),
         high_impact_revisions=result.get("high_impact_revisions", []),

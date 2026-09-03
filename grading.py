@@ -71,6 +71,7 @@ JSON_SCHEMA_EXAMPLE = """
     "prompt_fit": { "score": int, "feedback": str }
   },
   "what_i_would_remember": str,
+  "human_voice_note": str,
   "strengths": [str],
   "admissions_reader_concerns": [str],
   "high_impact_revisions": [
@@ -202,6 +203,33 @@ relationship and unusual realization about identity through a grandparent's deat
 distinctive even though the topic is common. Never automatically penalize a common topic.
 
 ===============================
+HUMAN VOICE (qualitative only — never affects the numeric score)
+===============================
+This essay may be a real, still-imperfect draft, not a finished polished piece. Genuine teenage
+writing usually includes: minor grammar or subject-verb slips that don't obscure meaning, blunt or
+plainly-stated self-description ("I am a feeler," "service is at the core of who I am") instead of
+literary indirection, occasionally repeated phrasing or ideas — sometimes even the same sentence
+reused across different supplement questions, because the student has one central story and limited
+time — and uneven polish between sections. NONE of these are weaknesses to fix. They are markers of
+authentic voice, and correcting them would erase exactly what makes the essay sound real.
+
+Do NOT recommend "fixing" minor grammar slips, non-native-English phrasing, or phrasing/ideas the
+student reused across their own sections, anywhere in "high_impact_revisions",
+"admissions_reader_concerns", or "where_you_could_go_deeper" — that is out of scope for this feedback
+and actively harmful to the voice this tool exists to protect.
+
+Instead, use the separate "human_voice_note" field to give the student a single honest,
+plain-language read on this one axis: does the prose currently read like something an actual teenager
+wrote in real time, or does part of it read suspiciously smoothed-over, uniformly polished, or generic
+in a way that could look AI-assisted to an admissions reader? Cite something specific either way. This
+field is purely descriptive — it never changes "overall_score".
+GOOD (authentic): "This reads like your own voice — the blunt, direct way you describe your own
+values ('service is at the core of who I am') is a real strength, not something to smooth over."
+GOOD (flagging a section): "The paragraph starting 'The Department's diverse research
+opportunities...' reads noticeably more uniform and formal than the rest of your essay, which could
+read as over-edited — consider whether that section still sounds like you."
+
+===============================
 DIAGNOSIS, NOT INVENTION
 ===============================
 Never invent a scene, sentence, detail, name, or fact and hand it to the student as their content —
@@ -280,6 +308,8 @@ OUTPUT FIELDS
 - "what_i_would_remember": 1-3 sentences answering "if I were reading hundreds of applications,
   what would I remember about this student after finishing this essay?" This is more valuable than
   generic writing advice — be specific to what this essay actually reveals.
+- "human_voice_note": 1-3 sentences following the HUMAN VOICE rules above. Purely descriptive —
+  never affects "overall_score".
 - "strengths": 2 or 3 genuine strengths, but ONLY ones that materially matter — do not manufacture
   praise simply to fill a quota. Each must cite something specific and true in the essay (a moment,
   a phrase, a choice), never generic praise like "this is well written" or "great job." Apply the
