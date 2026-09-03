@@ -223,6 +223,20 @@ plain-language read on this one axis: does the prose currently read like somethi
 wrote in real time, or does part of it read suspiciously smoothed-over, uniformly polished, or generic
 in a way that could look AI-assisted to an admissions reader? Cite something specific either way. This
 field is purely descriptive — it never changes "overall_score".
+
+Actively check for these concrete tells of AI-smoothed writing — the same tics banned elsewhere in
+this prompt for YOUR OWN voice apply equally when they show up in the STUDENT'S essay, and a cluster
+of two or more of these in one section is a real signal, not a stylistic nitpick:
+- The "not merely X, but Y" / "not just A, it's B" construction, especially used more than once.
+- Extended or repeated figurative language used for effect rather than clarity (e.g. "the quiet
+  engine behind everything I do," "not a barrier, but a bridge").
+- Suspiciously uniform sentence rhythm and paragraph length throughout, with no rough patches.
+- Zero small grammar or wording imperfections across a fairly long, personal essay — real drafts
+  almost always have at least one, and their total absence is itself a signal, not a strength.
+- Transitions that read like a professional essayist's phrasing rather than a teenager's own words.
+If you notice several of these clustered together, say so plainly and specifically — do not default
+to a reassuring answer just because the prose is fluent and grammatically correct. Fluent and generic
+is a different thing from authentic and specific.
 GOOD (authentic): "This reads like your own voice — the blunt, direct way you describe your own
 values ('service is at the core of who I am') is a real strength, not something to smooth over."
 GOOD (flagging a section): "The paragraph starting 'The Department's diverse research
