@@ -1,6 +1,7 @@
 import os                          # reads the GEMINI_API_KEY out of the environment
 import json                        # parses Gemini's JSON response text into a Python dict
 import re                          # strips markdown code fences before parsing, if present
+import difflib                     # fuzzy-matches a slightly misquoted passage back to the essay's real text
 from google import genai           # the current Gemini SDK (replaces the retired google-generativeai)
 from google.genai import types     # config objects like GenerateContentConfig
 from dotenv import load_dotenv     # loads variables from .env into the environment
@@ -135,6 +136,12 @@ connecting the two."
 This applies to every field in your output, not just "feedback" — "admissions_reader_concerns",
 "high_impact_revisions", "why_it_matters", "overall_summary", all of it. If you notice yourself
 reaching for a metaphor, stop and state the actual, literal observation instead.
+Specifically, never use "bridge" (as in "build a bridge," "bridge the gap," "bridge two worlds"),
+"journey," "tapestry," "spark," "testament," or "tip of the iceberg" in your own sentences — say
+what is actually missing ("the essay doesn't explain how X led to Y") instead. The "not merely X,
+but Y" / "not just X, but Y" construction is banned in YOUR sentences everywhere, including
+"what_i_would_remember" and "overall_summary"; you may quote it only when pointing it out in the
+student's own writing.
 
 ===============================
 THE FOUR ADMISSIONS-READER DIMENSIONS
@@ -346,6 +353,9 @@ OUTPUT FIELDS
 - "dimensions": score each of the five (six if a prompt was given) dimensions above. Each needs a
   verbatim "quote" from the essay (except prompt_fit, which judges the whole essay against the
   prompt rather than one line) and "feedback" backed by that quote, following every rule above.
+  Copy each quote character-for-character from the essay — do not fix its grammar or trim words. Use
+  a different passage for every quote and every "where_you_could_go_deeper" excerpt wherever the
+  essay allows; citing the same sentence twice means one of the numbered highlights cannot be shown.
 - "what_i_would_remember": 1-3 sentences answering "if I were reading hundreds of applications,
   what would I remember about this student after finishing this essay?" This is more valuable than
   generic writing advice — be specific to what this essay actually reveals.
@@ -372,15 +382,26 @@ OUTPUT FIELDS
   GOOD: "Think of the time when you found genuine joy from that. How did you feel? Expand on that."
   LESS GOOD (too formal, too distant): "What is one specific interaction you had that stayed with
   you?"
-- "overall_summary": one flowing paragraph (not labeled sub-sections) that naturally covers what's
-  working, what holds the essay back, the single highest-impact revision, and what you would
-  remember about this student — see the EXAMPLE below for the tone and structure to aim for.
+  NEVER PRESUPPOSE: a question may only assume what the essay actually says. Do not assume an event,
+  a person's presence, a conversation, or a feeling that the essay never mentions — the "joy" in the
+  GOOD example above is only acceptable if the essay itself states that emotion; otherwise ask with
+  neutral wording ("what did that feel like?"). Use "was there a time when...?" or "if so, ..."
+  whenever you are not certain the moment happened.
+  BAD: "How did it feel to see your parents in the audience?" (the essay never says they were there)
+  GOOD: "Was there a moment on stage when the character's frustration matched something you had
+  felt at home? What was happening in the scene? Expand on that."
+- "overall_summary": one flowing paragraph (not labeled sub-sections) covering exactly three things:
+  what is working, what holds the essay back, and the single highest-impact revision. Do NOT say
+  what you would remember about the student here — that belongs only in "what_i_would_remember",
+  which is displayed right next to this summary, so repeating it wastes the student's time. The
+  same goes for "strengths" and "admissions_reader_concerns": the summary should synthesize them in
+  one fresh sentence each, not restate them.
   EXAMPLE: "This is a strong essay with a clear and believable transformation. The basketball story
   gives the essay a concrete foundation, and the student's willingness to acknowledge their earlier
   self-centeredness makes the reflection credible. The biggest weakness is that the essay moves too
   quickly from the basketball experience to school, asking the reader to accept the connection
-  rather than demonstrating it. I would remember a student who learned to measure their value
-  through contribution rather than individual recognition."
+  rather than demonstrating it. The most useful revision is to add one concrete example of the same
+  lesson showing up in a classroom."
 
 ===============================
 SCORING
@@ -396,6 +417,19 @@ per-dimension scores. Do not let grammar or vocabulary dominate any dimension's 
 per-dimension scores represent the essay's current effectiveness, NOT the student's admissions
 chances — never imply that a score predicts an admissions outcome.
 
+SCORE ANCHORS — use these so the same essay gets the same score every time. For every dimension,
+place the essay in one of four tiers (as a share of that dimension's maximum), then pick the number
+inside the tier:
+- 0-39%: the dimension is mostly absent (e.g. a list of activities, claims with no evidence).
+- 40-64%: present but generic or unsupported — the reader could guess it without reading closely.
+- 65-84%: clearly present and specific to this student, with one identifiable gap.
+- 85-100%: distinctive and convincingly evidenced, with no major gap. Rare — reserve for essays you
+  would genuinely remember.
+REFLECTION & INSIGHT is the dimension that drifts most between runs, so tie it to the three levels
+defined above: an essay that stays at EVENT cannot score above the 40-64% tier; REFLECTION (a stated
+lesson without evidence of changed thinking or behavior) tops out at 65-84%; only DEEPER INSIGHT
+reaches 85%+. Decide the level first, then the number.
+
 ===============================
 PROMPT ALIGNMENT
 ===============================
@@ -403,7 +437,12 @@ The input you receive may begin with a section labeled "Essay Prompt given to th
 by "Student's Essay:". If that section is present, score "prompt_fit" and factor prompt alignment
 into "reflection_and_insight" and "narrative_craft" as well — explicitly mention in their feedback if
 and how the essay drifts from what the prompt was actually asking. If no prompt section is present,
-omit "prompt_fit" entirely and grade purely on the essay's own merits.
+omit "prompt_fit" entirely and grade purely on the essay's own merits — but first infer from the
+essay itself what kind of response it is (a personal-experience essay, a "why this school" or
+community supplement, or an idea/proposal essay) and judge it as that kind, not as a generic
+personal statement. For a "why this school" or community supplement, specificity means a real,
+named resource (a professor, program, or group) tied to something the student has actually done —
+a list of names with no connection to the student's own experience is the weakness to diagnose.
 
 ===============================
 FINAL QUALITY CONTROL
@@ -430,38 +469,142 @@ object. Match this exact structure and key names:
 """
 
 
+# Rules the prompt bans in the grader's own voice. LLMs follow style rules loosely, so grade_essay()
+# lints the output for these and regenerates once if any are found. Text inside quotation marks is
+# ignored, so pointing out a student's own "not just X, but Y" is still allowed.
+_STYLE_CHECKS = [
+    (re.compile(r"\bnot (?:just|merely|only|simply)\b[^.?!]{0,100}?\bbut\b", re.I), "the 'not just X, but Y' construction"),
+    (re.compile(r"\b(?:isn't|aren't|wasn't|weren't|doesn't|don't|didn't) (?:just|merely|only|simply)\b", re.I), "the \"isn't just X\" construction"),
+    (re.compile(r"\b(?:bridg(?:e|es|ed|ing)|tapestry|journey|testament)\b", re.I), "a banned metaphor word"),
+]
+_QUOTED_TEXT = re.compile(r'"[^"]*"|\u201c[^\u201d]*\u201d|\u2018[^\u2019]*\u2019|(?<!\w)\'[^\']{3,}?\'(?!\w)')
+
+
+def _grader_strings(obj):
+    """Yields every string the grader itself wrote (skips verbatim quotes taken from the essay)."""
+    if isinstance(obj, str):
+        yield obj
+    elif isinstance(obj, dict):
+        for key, value in obj.items():
+            if key not in ("quote", "excerpt"):
+                yield from _grader_strings(value)
+    elif isinstance(obj, list):
+        for value in obj:
+            yield from _grader_strings(value)
+
+
+def _style_violations(result: dict, essay_text: str) -> list[str]:
+    essay_lower = essay_text.lower()
+    found = []
+    for text in _grader_strings(result):
+        unquoted = _QUOTED_TEXT.sub(" ", text)
+        for pattern, description in _STYLE_CHECKS:
+            match = pattern.search(unquoted)
+            # a metaphor word is fine when the essay itself is literally about it (e.g. building bridges)
+            if match and not (description == "a banned metaphor word" and match.group(0).lower() in essay_lower):
+                found.append(f'{description}: "{text.strip()[:140]}"')
+    return found
+
+
+def _repair_quote(quote: str, essay_text: str) -> str | None:
+    """Returns the exact passage of essay_text that `quote` refers to, or None if it can't be found.
+
+    The model often returns a quote that differs from the essay by line-break whitespace or one
+    changed word ("immersed yourself" for "immersed myself"). app.py needs an exact substring to
+    place the numbered highlight, so those quotes would otherwise be dropped silently."""
+    if not quote:
+        return None
+    if quote in essay_text:
+        return quote
+    words = quote.split()
+    if len(words) < 3:
+        return None
+    whitespace_tolerant = re.search(r"\s+".join(re.escape(w) for w in words), essay_text)
+    if whitespace_tolerant:
+        return whitespace_tolerant.group(0)
+
+    spans = [m.span() for m in re.finditer(r"\S+", essay_text)]
+    essay_words = [essay_text[a:b] for a, b in spans]
+    matcher = difflib.SequenceMatcher(autojunk=False)
+    matcher.set_seq2(words)  # seq2 is cached by difflib, so only seq1 changes per window below
+    best_ratio, best_window = 0.0, None
+    for size in (len(words) - 1, len(words), len(words) + 1):  # tolerate one dropped or added word
+        if size < 2 or size > len(essay_words):
+            continue
+        for start in range(len(essay_words) - size + 1):
+            matcher.set_seq1(essay_words[start:start + size])
+            if matcher.real_quick_ratio() <= best_ratio or matcher.quick_ratio() <= best_ratio:
+                continue
+            ratio = matcher.ratio()
+            if ratio > best_ratio:
+                best_ratio, best_window = ratio, (start, start + size)
+    if best_window and best_ratio >= 0.85:
+        return essay_text[spans[best_window[0]][0]:spans[best_window[1] - 1][1]]
+    return None
+
+
+def _generate_json(contents: str) -> dict:
+    """Calls Gemini and parses its JSON, retrying once if the JSON is malformed."""
+    last_error = None
+    for _ in range(2):
+        response = client.models.generate_content(
+            model="gemini-flash-lite-latest",  # cheaper, higher free-tier quota than gemini-flash-latest
+            contents=contents,            # the essay, optionally preceded by its prompt
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_PROMPT,           # the rubric/rules, sent as the "system" role
+                temperature=0.3,                             # low temperature = more consistent, less random output
+                response_mime_type="application/json",       # forces the API to return valid JSON syntax
+            ),
+        )
+        # Strip a leading ```json / ``` fence and a trailing ``` fence, if the model added one
+        # despite response_mime_type="application/json". ^ and $ anchor to the very start/end
+        # of the whole string (not each line), so this only touches wrapping fences, not JSON
+        # content that happens to contain backticks.
+        cleaned_text = re.sub(r"^```(?:json)?\s*|\s*```$", "", response.text.strip())
+        try:
+            return json.loads(cleaned_text)  # convert the JSON string into a Python dict
+        except json.JSONDecodeError as e:
+            last_error = ValueError(f"Gemini did not return valid JSON: {e}\nRaw response: {response.text}")
+    raise last_error
+
+
 def grade_essay(essay_text: str, essay_prompt: str | None = None) -> dict:
     if essay_prompt:  # only build the labeled two-part message when a prompt was actually given
         contents = f"Essay Prompt given to the student:\n{essay_prompt}\n\nStudent's Essay:\n{essay_text}"
     else:
         contents = essay_text
 
-    response = client.models.generate_content(
-        model="gemini-flash-lite-latest",  # cheaper, higher free-tier quota than gemini-flash-latest
-        contents=contents,            # the essay, optionally preceded by its prompt
-        config=types.GenerateContentConfig(
-            system_instruction=SYSTEM_PROMPT,           # the rubric/rules, sent as the "system" role
-            temperature=0.3,                             # low temperature = more consistent, less random output
-            response_mime_type="application/json",       # forces the API to return valid JSON syntax
-        ),
-    )
+    result = _generate_json(contents)
 
-    # Strip a leading ```json / ``` fence and a trailing ``` fence, if the model added one
-    # despite response_mime_type="application/json". ^ and $ anchor to the very start/end
-    # of the whole string (not each line), so this only touches wrapping fences, not JSON
-    # content that happens to contain backticks.
-    cleaned_text = re.sub(r"^```(?:json)?\s*|\s*```$", "", response.text.strip())
-
-    try:
-        result = json.loads(cleaned_text)  # convert the JSON string into a Python dict
-    except json.JSONDecodeError as e:
-        raise ValueError(
-            f"Gemini did not return valid JSON: {e}\nRaw response: {response.text}"
+    # Quality gate: if the grader broke its own style rules, ask once for a corrected draft and keep
+    # whichever draft has fewer violations. A failed retry must never lose the good first draft.
+    violations = _style_violations(result, essay_text)
+    if violations:
+        correction = (
+            "\n\n[STYLE CORRECTION] Your previous draft broke the style rules in these sentences:\n- "
+            + "\n- ".join(violations[:6])
+            + "\nRegenerate the complete JSON. Keep your judgments and scores, but rewrite those sentences "
+            "in plain, literal language without the banned constructions or metaphor words."
         )
+        try:
+            retry = _generate_json(contents + correction)
+            if len(_style_violations(retry, essay_text)) < len(violations):
+                result = retry
+        except Exception:
+            pass
+
+    dimensions = result.get("dimensions", {})
+
+    # Make every quote an exact substring of the essay (or blank it), so a "quoted excerpt" shown to
+    # the student is never a paraphrase and app.py can always find it to place a numbered highlight.
+    for dim in dimensions.values():
+        if dim.get("quote"):
+            dim["quote"] = _repair_quote(dim["quote"], essay_text) or ""
+    for idea in result.get("where_you_could_go_deeper", []):
+        idea["excerpt"] = _repair_quote(idea.get("excerpt", ""), essay_text) or ""
 
     # Compute overall_score and its band label ourselves rather than trusting the model's own
     # arithmetic — this guarantees the number and label are always internally consistent.
-    dimensions = result.get("dimensions", {})
     has_prompt = "prompt_fit" in dimensions
     max_points = DIMENSION_MAX_POINTS_WITH_PROMPT if has_prompt else DIMENSION_MAX_POINTS_NO_PROMPT
 
@@ -471,7 +614,9 @@ def grade_essay(essay_text: str, essay_prompt: str | None = None) -> dict:
         if not dim:
             continue
         raw_score = dim.get("score", 0)
-        clamped_score = max(0, min(raw_score, max_value))  # keep the model within its allotted range
+        if not isinstance(raw_score, (int, float)):  # the model occasionally returns "18" or null
+            raw_score = 0
+        clamped_score = max(0, min(round(raw_score), max_value))  # keep the model within its allotted range
         dim["score"] = clamped_score
         dim["max_points"] = max_value  # attached for display; app.py doesn't need its own copy of this table
         overall_score += clamped_score

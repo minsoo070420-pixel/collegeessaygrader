@@ -129,8 +129,10 @@
             <h2 class="deeper-heading">Where You Could Go Deeper</h2>
             {% for idea in deeper_ideas %}
             <div class="card expansion-card">
+                {% if idea.excerpt %}
                 <p class="label">Quoted excerpt</p>
                 <blockquote>{{ idea.excerpt }}</blockquote>
+                {% endif %}
 
                 <p class="label">Why it matters</p>
                 <p>{{ idea.why_it_matters }}</p>

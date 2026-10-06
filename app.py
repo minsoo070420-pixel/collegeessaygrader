@@ -136,6 +136,13 @@ def analyze_topics():
         return render_template(
             "topics.html", error="The AI response could not be understood. Please try again.", **render_kwargs
         ), 500
+    except Exception as e:  # Gemini itself failed (rate limit, outage, network) — not a bug in our code
+        print(f"Gemini call failed: {e!r}")
+        return render_template(
+            "topics.html",
+            error="The AI service is busy right now. Please wait a minute and try again.",
+            **render_kwargs,
+        ), 503
 
     return render_template("topics.html", analysis=analysis, **render_kwargs)
 
@@ -186,6 +193,13 @@ def analyze():
         return render_template(
             "index.html", error="The AI response could not be understood. Please try again.", **render_kwargs
         ), 500
+    except Exception as e:  # Gemini itself failed (rate limit, outage, network) — not a bug in our code
+        print(f"Gemini call failed: {e!r}")
+        return render_template(
+            "index.html",
+            error="The AI service is busy right now. Please wait a minute and try again.",
+            **render_kwargs,
+        ), 503
 
     dimension_data = result.get("dimensions", {})
     # prompt_fit only exists in dimension_data when a prompt was given — append it last if present,
